@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- asdasds -->
     <el-form ref="form"
              :model="loginForm"
              label-width="80px">
@@ -36,7 +35,10 @@ export default {
       let data = {}
       data.admin_name = this.loginForm.name;
       data.admin_password = this.loginForm.password;
-      this.$store.dispatch('user/login', data)
+      this.$store.dispatch('user/login', data).then(response=>{
+      this.$router.push('/')
+      })
+     
     }
   }
 };

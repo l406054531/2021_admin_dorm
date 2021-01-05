@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// const originalPush = VueRouter.prototype.push
-// VueRouter.prototype.push = function push(location) {
-//     return originalPush.call(this, location).catch((err) => err)
-// }
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch((err) => err)
+}
 
 Vue.use(VueRouter)
 
-export const constantRoutes = [{
+export const constantRoutes = [
+    { path: '/', redirct: '/' },
+    {
         path: '/login',
         name: 'login',
         hidden: true,
@@ -24,11 +26,18 @@ export const constantRoutes = [{
         // hidden: true,
         meta: {
             title: '测试',
-            role: ['admin']
         },
         component: () =>
             import ('../views/404.vue')
-    }
+    },
+    // {
+    //     path: '/admin',
+    //     meta: { title: '管理', roles: ['admin', 'aa'] },
+    //     component: () =>
+    //         import ('@/views/admin/admin'),
+
+    // }
+
 
 ]
 

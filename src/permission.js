@@ -1,36 +1,27 @@
 import router from './router'
 import store from './store'
-
+const whiteList = ['/login']
 router.beforeEach(async(to, from, next) => {
     document.title = to.meta.title
     let roles = store.state.user.role
-    if (to.path == "/") {
-        next({ path: '/login' })
-    } else {
-        if (roles) {
+    if (roles) {
+        if (store.state.permission.routes.length > 0) {
+            if (to.path === '/login' || to.path === '/') {
+                next({ path: store.state.permission.addRoutes[0].path })
+            } else {
+                next()
+            }
+        } else {
             const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
-            // if (to.path === '/login' || to.path === '/') {
-            //     next({ path: accessRoutes[0].redirect || accessRoutes[0].path })
-            //         // NProgress.done()
-            // }
-            // console.log(accessRoutes);
-            // router.addRoutes(accessRoutes)
-            // console.log(router.options.routes);
-            // next()
+            router.addRoutes(accessRoutes)
+            next({ path: store.state.permission.addRoutes[0].path })
         }
-        //     if (to.meta.role instanceof Array) {
-        //         if (to.meta.role.indexOf(role) > -1) {
+    } else {
+        if (whiteList.indexOf(to.path) !== -1) {
+            next()
+        } else {
+            next('/login')
 
-        //         next()
-        //     } else {
-        //         next({ path: '/login' })
-        //     }
-        // } else {
-        next()
-            // }
+        }
     }
-
-
-
 })

@@ -2,10 +2,10 @@ import { login } from '@/api/login';
 // import { reject, resolve } from 'core-js/fn/promise';
 const state = {
     get role() {
-        return localStorage.getItem('role')
+        return sessionStorage.getItem('role')
     },
     set role(value) {
-        localStorage.setItem('role', value)
+        return sessionStorage.setItem('role', value)
     },
 }
 
