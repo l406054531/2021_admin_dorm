@@ -1,6 +1,4 @@
 import layout from "@/layout"
-
-
 export const userRouters = [{
         path: '/admin',
         meta: { title: '管理', roles: ['admin'] },
