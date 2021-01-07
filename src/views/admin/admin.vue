@@ -10,14 +10,14 @@
 import mytable from './module/mytable';
 export default {
   components: { mytable },
-data() {
+  data () {
     return {
-        tableHeader:[
-            {label:'a',prop:'z'},
-            {label:'a',prop:'z'},
-        ]
+      tableHeader: [
+        { label: 'a', prop: 'z' },
+        { label: 'a', prop: 'z' },
+      ]
     }
-},
+  },
 }
 </script>
 <style  scoped>
