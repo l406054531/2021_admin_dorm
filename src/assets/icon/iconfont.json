@@ -1,0 +1,23 @@
+{
+  "id": "2314620",
+  "name": "el-icon",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7149553",
+      "name": "管理",
+      "font_class": "guanli",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "13744101",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    }
+  ]
+}

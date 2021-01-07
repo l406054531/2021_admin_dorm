@@ -30,15 +30,6 @@ export const constantRoutes = [
         component: () =>
             import ('../views/404.vue')
     },
-    // {
-    //     path: '/admin',
-    //     meta: { title: '管理', roles: ['admin', 'aa'] },
-    //     component: () =>
-    //         import ('@/views/admin/admin'),
-
-    // }
-
-
 ]
 
 const createRouter = () => new VueRouter({

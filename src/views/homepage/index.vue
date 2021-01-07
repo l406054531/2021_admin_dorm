@@ -1,13 +1,15 @@
 <template>
-  <div>404</div>
+  <div>首页</div>
 </template>
+
 <script>
 export default {
-    
-  mounted () {
-    // console.log(this.$store.state.user.role);
-  }
+  data() {
+    return {
+    };
+  },
 }
+
 </script>
 <style lang='scss' scoped>
 </style>

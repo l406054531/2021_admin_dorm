@@ -1,13 +1,24 @@
 <template>
   <main class="page-board">
-    <router-view></router-view>
+    <transition name="fade-transform"
+                mode="out-in">
+      <keep-alive :include="cachedViews">
+        <router-view :key="key()" />
+      </keep-alive>
+    </transition>
   </main>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
+      key() {
+        return this.$route.path
+      },
+      cachedViews() {
+        return this.$store.state.tagsView.cachedViews
+      },
     };
   },
 }
@@ -20,6 +31,9 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 90px 30px 30px 230px;
+  padding: 80px 30px 30px 220px;
+  background-color: #ededed;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

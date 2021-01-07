@@ -25,8 +25,9 @@ export default {
   z-index: 1;
   width: 200px;
   height: 100%;
-  padding-top: 60px;
+  padding-top: 70px;
   box-sizing: border-box;
-  background-color: #ededed;
+  background:  rgb(221, 227, 235);
+
 }
 </style>
