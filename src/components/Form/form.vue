@@ -12,7 +12,8 @@
         <el-input clearable
                   v-if="item.type==='input'"
                   v-model="dialogform[item.prop]"
-                  :placeholder="item.placeholder"></el-input>
+                  :placeholder="item.placeholder"
+                  :show-password="item.show"></el-input>
         <!-- 文本域 -->
         <el-input clearable
                   v-if="item.type==='textarea'"
@@ -63,7 +64,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
     }
   },
@@ -94,7 +95,7 @@ export default {
 
   },
   methods: {
-    validateForm () {
+    validateForm() {
       // debugger;
       let flag = null
       this.$refs['ruleform'].validate((valid) => {
@@ -108,10 +109,10 @@ export default {
     },
 
   },
-  mounted () {
+  mounted() {
 
   },
-  created () {
+  created() {
 
   },
 

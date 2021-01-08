@@ -3,7 +3,7 @@
     <el-table :data="tableData"
               border
               highlight-current-row
-              style="width: 87.5%">
+              >
       <template v-for="(item,index) in tableHeader">
         <el-table-column :label="item.label"
                          :key="index"

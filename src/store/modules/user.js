@@ -28,20 +28,25 @@ const actions = {
         const { admin_name, admin_password } = usetInfo
         return new Promise((resolve, reject) => {
             login(admin_name, admin_password).then(response => {
-                if (response.data == '') {
-                    return Message.error("账号或密码有误")
+                if (admin_name == '' || admin_password == '') {
+                    return Message.warning("请正确输入账号或密码")
                 } else {
-                    let role = response.data.role_name
-                    let username = response.data.admin_name
-                    commit('USER_ROLE', role)
-                    commit('USER_NAME', username)
-                    resolve()
+                    if (response.data == '') {
+                        return Message.error("账号或密码有误")
+                    } else {
+                        let role = response.data.role_name
+                        let username = response.data.user_name
+                        commit('USER_ROLE', role)
+                        commit('USER_NAME', username)
+                        resolve()
+                    }
                 }
+
             }).catch(error => {
                 reject(error)
             })
         })
-    }
+    },
 }
 
 

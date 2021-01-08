@@ -1,8 +1,8 @@
 import router from './router'
 import store from './store'
-const whiteList = ['/login']
+const whiteList = ['/login', '/register']
 router.beforeEach(async(to, from, next) => {
-    document.title = to.meta.title + "-"
+    document.title = to.meta.title + "-" + "Lx"
     let roles = store.state.user.role
     if (roles) {
         // console.log(store.state.permission.routes);

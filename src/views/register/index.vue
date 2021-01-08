@@ -12,16 +12,24 @@
              alt="">
       </div>
       <el-form ref="form"
-               :model="loginForm">
-        <el-form-item>
-          <el-input v-model="loginForm.name"
+               :model="loginForm"
+               :rules="rules">
+        <el-form-item prop="user_name">
+          <el-input v-model="loginForm.user_name"
+                    placeholder="用户名">
+            <i slot="prefix"
+               class="iconfont icon-denglu"></i>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="admin_name">
+          <el-input v-model="loginForm.admin_name"
                     placeholder="账号">
             <i slot="prefix"
                class="iconfont icon-denglu"></i>
           </el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="loginForm.password"
+        <el-form-item prop="admin_password">
+          <el-input v-model="loginForm.admin_password"
                     placeholder="密码"
                     show-password
                     @keyup.enter.native="userLogin">
@@ -30,9 +38,10 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="userLogin">登 录</el-button>
-          <el-link icon="el-icon-edit" @click="toRegister"
-                   :underline="false">注册账号</el-link>
+          <el-button @click="addUser">注 册</el-button>
+          <el-link icon="el-icon-edit"
+                   @click="toLogin"
+                   :underline="false">返回登录</el-link>
         </el-form-item>
 
       </el-form>
@@ -42,29 +51,40 @@
 
 <script>
 import particles from '@/components/Particles/src/main';
+import { addUser } from '@/api/login';
 export default {
   components: { particles },
   data() {
     return {
       loginForm: {
-        name: 'admin',
-        password: 'admin'
+        user_name: '',
+        admin_name: '',
+        admin_password: ''
+      },
+      rules: {
+        user_name: [{ required: true, message: '请输入用户名', trigger: 'blur' },],
+        admin_name: [{ required: true, message: '请输入账号', trigger: 'blur' },],
+        admin_password: [{ required: true, message: '请输入密码', trigger: 'blur' },],
       },
       pColor: '#FFE4E1'
     };
   },
   methods: {
-    userLogin() {
-      let data = {}
-      data.admin_name = this.loginForm.name;
-      data.admin_password = this.loginForm.password;
-      this.$store.dispatch('user/login', data).then(response => {
-        this.$router.push('/')
+    addUser() {
+      addUser(this.loginForm).then(response => {
+        if (response.code == 1) {
+          this.$message({
+            message: '注册成功,即将为您跳转到登录页面',
+            type: 'success'
+          });
+          setTimeout(() => {
+            this.$router.push('/login')
+          }, 3000)
+        }
       })
     },
-    toRegister(){
-        console.log('1');
-        this.$router.push('/register')
+    toLogin() {
+      this.$router.push('/login')
     }
   }
 };
@@ -138,7 +158,7 @@ export default {
           //   }
         }
         .el-input__prefix {
-            /**输入框图标 */
+          /**输入框图标 */
           padding-top: 4px;
           padding-left: 10px;
           color: #fff;
@@ -149,6 +169,10 @@ export default {
           //   &:hover {
           //     color: #000;
           //   }
+        }
+        .el-form-item__error {
+          color: rgba(255,255,255,0.8);
+          margin-left: 5px;
         }
       }
     }

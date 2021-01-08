@@ -21,6 +21,16 @@ export const constantRoutes = [
             import ('../views/login/userLogin.vue')
     },
     {
+        path: '/register',
+        name: 'register',
+        hidden: true,
+        meta: {
+            title: '注册页面'
+        },
+        component: () =>
+            import ('../views/register/index.vue')
+    },
+    {
         path: '/404',
         name: '404',
         // hidden: true,

@@ -7,7 +7,7 @@
              background-color=" rgb(221, 227, 235)"
              text-color="#000"
              active-text-color="#FF4500">
-      <div v-for="(item, index) of $store.state.permission.addRoutes"
+      <div v-for="(item, index) of addRouters "
            :key="index">
         <el-submenu :index="index.toString()"
                     v-if="item.children && item.children.length > 1">
@@ -41,6 +41,9 @@
 <script>
 export default {
   name: "MenuItem",
+  props:{
+      addRouters:Array
+  }
 };
 </script>
 
