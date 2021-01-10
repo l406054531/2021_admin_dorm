@@ -11,7 +11,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 //全局引入控件
 import myForm from "@/components/Form/form";
+import pagination from './components/Pagination/pagination.vue';
 Vue.component('my-form', myForm)
+Vue.component('my-pagination', pagination)
 
 Vue.config.productionTip = false
 

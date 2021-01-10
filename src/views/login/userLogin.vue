@@ -31,7 +31,8 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="userLogin">登 录</el-button>
-          <el-link icon="el-icon-edit" @click="toRegister"
+          <el-link icon="el-icon-edit"
+                   @click="toRegister"
                    :underline="false">注册账号</el-link>
         </el-form-item>
 
@@ -44,7 +45,7 @@
 import particles from '@/components/Particles/src/main';
 export default {
   components: { particles },
-  data() {
+  data () {
     return {
       loginForm: {
         name: 'admin',
@@ -54,7 +55,7 @@ export default {
     };
   },
   methods: {
-    userLogin() {
+    userLogin () {
       let data = {}
       data.admin_name = this.loginForm.name;
       data.admin_password = this.loginForm.password;
@@ -62,9 +63,9 @@ export default {
         this.$router.push('/')
       })
     },
-    toRegister(){
-        console.log('1');
-        this.$router.push('/register')
+    toRegister () {
+      console.log('1');
+      this.$router.push('/register')
     }
   }
 };
@@ -138,7 +139,7 @@ export default {
           //   }
         }
         .el-input__prefix {
-            /**输入框图标 */
+          /**输入框图标 */
           padding-top: 4px;
           padding-left: 10px;
           color: #fff;

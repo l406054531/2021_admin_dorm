@@ -7,11 +7,11 @@ const state = {
     set role(value) {
         return sessionStorage.setItem('role', value)
     },
-    get username() {
-        return sessionStorage.getItem('username')
+    get userInfo() {
+        return sessionStorage.getItem('userInfo')
     },
-    set username(value) {
-        return sessionStorage.setItem('username', value)
+    set userInfo(value) {
+        return sessionStorage.setItem('userInfo', value)
     },
 }
 const mutations = {
@@ -20,7 +20,13 @@ const mutations = {
     },
     USER_NAME(state, username) {
         state.username = username
-    }
+    },
+    USER_ID(state, userId) {
+        state.userId = userId
+    },
+    USER_INFO(state, info) {
+        state.userInfo = info
+    },
 }
 const actions = {
     login({ commit, state }, usetInfo) {
@@ -35,9 +41,9 @@ const actions = {
                         return Message.error("账号或密码有误")
                     } else {
                         let role = response.data.role_name
-                        let username = response.data.user_name
+                        let data = JSON.stringify(response.data)
                         commit('USER_ROLE', role)
-                        commit('USER_NAME', username)
+                        commit('USER_INFO', data)
                         resolve()
                     }
                 }

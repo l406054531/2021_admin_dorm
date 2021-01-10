@@ -1,98 +1,114 @@
 <template>
-  <div>
-    <div class="my-header">
-      <div class="logo">
-        <div>{{title}}</div>
-      </div>
-      <el-dropdown trigger="click"
-                   @command="handleCommand"
-                   @visible-change="dropdownChange">
-        <span class="el-dropdown-link">
-          <img src="https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/img/wlop/bg_030.jpg"
-               alt="">
-          <span> {{$store.getters.username}} <i :class="[active?'el-icon-caret-top':'el-icon-caret-bottom' ,'el-icon--right']"></i></span>
-          <!-- <span> 彭于晏 <i class="el-icon-arrow-down el-icon--right"></i></span> -->
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="home">首页</el-dropdown-item>
-          <el-dropdown-item command="up">更改头像</el-dropdown-item>
-          <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-
+  <div class="my-header">
+    <div class="logo">
+      <div>{{title}}</div>
     </div>
-    <el-dialog title="更改头像"
-               :visible.sync="dialogVisible"
-               width="30%">
-      <el-upload class="upload-demo"
-                 action="https://jsonplaceholder.typicode.com/posts/"
-                 :on-preview="handlePreview"
-                 :on-remove="handleRemove"
-                 :before-remove="beforeRemove"
-                 :limit="1"
-                 :on-exceed="handleExceed"
-                 :file-list="fileList"
-                 style="margin-left:20px">
-        <el-button size="small"
-                   type="primary">点击上传</el-button>
-        <div slot="tip"
-             class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="dialogVisible = false">确 定</el-button>
+    <el-dropdown trigger="click"
+                 @command="handleCommand"
+                 @visible-change="dropdownChange">
+      <span class="el-dropdown-link">
+        <img :src="imageUrl"
+             alt="">
+        <span> {{userInfo.user_name}} <i :class="[active?'el-icon-caret-top':'el-icon-caret-bottom' ,'el-icon--right']"></i></span>
       </span>
-    </el-dialog>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="home">首页</el-dropdown-item>
+        <el-dropdown-item command="up">更改头像
+        </el-dropdown-item>
+        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <input type="file"
+           class="uploadFile"
+           ref="uploadFile"
+           accept='image/jpeg,image/png'
+           @change="upload" />
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import { imgEdit, upImg } from '@/api/admin';
 export default {
-  data() {
+  data () {
     return {
       title: 'LOGO',
-      imageUrl: '',
-      active:false,
-      dialogVisible: false,
-      fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
+      imageUrl: "",//图片路径
+      active: false,//下拉选项箭头
+      appCode: '418783FDA9E0090B1C990AE816ACDCE3',//应用Code标识 
+      diyPath: 'images/',//自定义路径,
+      userInfo: {},//用户信息
     };
   },
   methods: {
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
-
-    logout() {
+    /**退出登录 */
+    logout () {
       sessionStorage.clear();
       this.$router.push('/login')
     },
-    homepage() {
+    /**返回首页 */
+    homepage () {
       let path = this.$store.getters.permission_routes[0].redirect
       this.$router.push(path)
     },
-    handleCommand(command) {
+    handleCommand (command) {
       if (command == "logout") {
         this.logout()
       } else if (command == "home") {
         this.homepage()
       } else if (command == "up") {
-        this.dialogVisible = true
+        this.$refs.uploadFile.click();
       }
     },
-    dropdownChange(e){
-        this.active=e
+    dropdownChange (e) {
+      this.active = e
+    },
+    /**上传头像 */
+    upload () {
+      let file = this.$refs.uploadFile.files[0];
+      let postData = new FormData();
+      postData.append('file', file);
+      for (let key in this.data) {
+        postData.append(key, this.data[key]);
+
+      }
+      upImg(postData).then(response => {
+        if (response.code === 1) {
+          this.$message({
+            message: '更换成功',
+            type: 'success'
+          });
+          let data = {}
+          data.admin_id = this.userInfo.admin_id
+          data.img = response.data.url
+          this.imgEdit(data)
+          this.setUserInfo(response.data.url)
+          this.dialogVisible = false
+        }
+        else {
+          this.$message({
+            message: '更换失败',
+            type: 'error'
+          });
+        }
+      });
+    },
+    /**修改数据库img路径 */
+    imgEdit (data) {
+      imgEdit(data).then(response => { })
+    },
+    /** 修改头像时修改缓存 实时更新头像 */
+    setUserInfo (data) {
+      let user = JSON.parse(sessionStorage.getItem('userInfo'))
+      user.img = data
+      let userInfo = JSON.stringify(user)
+      sessionStorage.setItem('userInfo', userInfo)
+      this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + data
     }
+  },
+  mounted () {
+    this.userInfo = JSON.parse(this.$store.getters.userInfo)
+    this.setUserInfo(this.userInfo.img)
   }
 };
 </script>
@@ -118,8 +134,6 @@ export default {
     float: right;
     margin-right: 50px;
     height: 100%;
-    // display: flex;
-    // justify-content: space-around;
     cursor: pointer;
     .el-dropdown-link {
       display: flex;
@@ -132,6 +146,18 @@ export default {
         border-radius: 50%;
       }
     }
+    // .el-dropdown-menu {
+    //   .el-dropdown-item {
+    //     .uploadFile {
+    //       color: red;
+    //     }
+    //   }
+    // }
+  }
+}
+::v-deep {
+  input {
+    display: none;
   }
 }
 </style>

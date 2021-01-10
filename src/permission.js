@@ -3,6 +3,7 @@ import store from './store'
 const whiteList = ['/login', '/register']
 router.beforeEach(async(to, from, next) => {
     document.title = to.meta.title + "-" + "Lx"
+        // document.title = "前端资料组件库"
     let roles = store.state.user.role
     if (roles) {
         // console.log(store.state.permission.routes);

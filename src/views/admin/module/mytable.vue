@@ -2,8 +2,7 @@
   <div>
     <el-table :data="tableData"
               border
-              highlight-current-row
-              >
+              highlight-current-row>
       <template v-for="(item,index) in tableHeader">
         <el-table-column :label="item.label"
                          :key="index"
@@ -17,15 +16,35 @@
 </template>
 
 <script>
+import { getAdminList } from '@/api/admin';
 export default {
   props: {
-    tableHeader: Array
+    tableHeader: Array,
+    params: Object
   },
-  data() {
+  data () {
     return {
       tableData: [],
     };
   },
+  methods: {
+    getList (params) {
+      getAdminList(params).then(response => {
+        if (response.code == 1) {
+          this.tableData = response.data
+          this.$emit('tabletotal', response.count)
+        }
+      })
+    },
+  },
+  mounted () {
+    this.getList(this.params)
+  },
+  // watch: {
+  //   "params.page": function (value, oldValue) {
+  //     return console.log(value);
+  //   }
+  // },
 }
 
 </script>
