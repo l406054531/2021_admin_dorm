@@ -31,8 +31,15 @@
         <el-form-item prop="admin_password">
           <el-input v-model="loginForm.admin_password"
                     placeholder="密码"
-                    show-password
-                    @keyup.enter.native="userLogin">
+                    show-password>
+            <i slot="prefix"
+               class="iconfont icon-mima"></i>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="new_password">
+          <el-input v-model="loginForm.new_password"
+                    placeholder="二次输入密码"
+                    show-password>
             <i slot="prefix"
                class="iconfont icon-mima"></i>
           </el-input>
@@ -54,23 +61,33 @@ import particles from '@/components/Particles/src/main';
 import { addUser } from '@/api/login';
 export default {
   components: { particles },
-  data() {
+  data () {
+    const new_password = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请二次输入密码'));
+      }
+      if (this.loginForm.admin_password !== this.loginForm.new_password) {
+        return callback(new Error('两次密码输入不正确'));
+      }
+    }
     return {
       loginForm: {
         user_name: '',
         admin_name: '',
-        admin_password: ''
+        admin_password: '',
+        new_password: ''
       },
       rules: {
         user_name: [{ required: true, message: '请输入用户名', trigger: 'blur' },],
         admin_name: [{ required: true, message: '请输入账号', trigger: 'blur' },],
         admin_password: [{ required: true, message: '请输入密码', trigger: 'blur' },],
+        new_password: { required: true, validator: new_password, trigger: 'blur' }
       },
       pColor: '#FFE4E1'
     };
   },
   methods: {
-    addUser() {
+    addUser () {
       addUser(this.loginForm).then(response => {
         if (response.code == 1) {
           this.$message({
@@ -83,7 +100,7 @@ export default {
         }
       })
     },
-    toLogin() {
+    toLogin () {
       this.$router.push('/login')
     }
   }
@@ -171,7 +188,7 @@ export default {
           //   }
         }
         .el-form-item__error {
-          color: rgba(255,255,255,0.8);
+          color: rgba(255, 255, 255, 0.8);
           margin-left: 5px;
         }
       }

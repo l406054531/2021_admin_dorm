@@ -56,9 +56,9 @@
 <script>
 import axios from 'axios'
 import { Edit, upImg } from '@/api/admin';
-import { Decrypt } from '@/utils/Crypto';
+import { Encrypt, Decrypt } from '@/utils/Crypto';
 export default {
-  data() {
+  data () {
     const password = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('请输入原密码'));
@@ -134,17 +134,17 @@ export default {
   },
   methods: {
     /**退出登录 */
-    logout() {
+    logout () {
       sessionStorage.clear();
       //   this.$router.push('/login')
       this.$router.go(0)
     },
     /**返回首页 */
-    homepage() {
+    homepage () {
       let path = this.$store.getters.permission_routes[0].redirect
       this.$router.push(path)
     },
-    handleCommand(command) {
+    handleCommand (command) {
       if (command == "logout") {
         this.logout()
       } else if (command == "home") {
@@ -154,17 +154,19 @@ export default {
       } else if (command == 'myInfo') {
         this.dialogVisible = true
         this.dialogTitle = this.infoTitle
-        this.getInfo(this.userInfo)
+        // this.getInfo(this.userInfo) 
+        /**获取个人信息 */
+        this.infoDialogform = this.userInfo
       } else if (command == 'editPssword') {
         this.dialogVisible = true
         this.dialogTitle = this.passwordTitle
       }
     },
-    dropdownChange(e) {
+    dropdownChange (e) {
       this.active = e
     },
     /**上传头像 */
-    upload() {
+    upload () {
       let file = this.$refs.uploadFile.files[0];
       let postData = new FormData();
       postData.append('file', file);
@@ -183,7 +185,10 @@ export default {
           data.img = response.data.url
           /**修改数据库img路径 */
           Edit(data).then(response => { })
-          this.setUserImg(response.data.url)
+          // this.setUserImg(response.data.url)
+          this.setUserInfo(response.data.url, 'img', (data) => {
+            this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + data
+          })
           this.dialogVisible = false
         }
         else {
@@ -194,27 +199,21 @@ export default {
         }
       });
     },
-    /** 修改头像时修改缓存 实时更新头像 */
-    setUserImg(data) {
-      let user = JSON.parse(sessionStorage.getItem('userInfo'))
-      user.img = data
-      let userInfo = JSON.stringify(user)
-      sessionStorage.setItem('userInfo', userInfo)
-      this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + data
-    },
     /**获取个人信息 */
-    getInfo(info) {
-      this.infoDialogform = info
-    },
+    // getInfo (info) {
+    //   this.infoDialogform = info
+    // },
     /**确认修改密码 */
-    async editPassword() {
+    async editPassword () {
       let flag = await this.$refs.passwordRef.validateForm();
       if (flag == null) {
         let data = {}
         data.admin_id = this.userInfo.admin_id
         data.admin_password = this.passwordDialogform.confirm_password
         Edit(data).then(response => {
-          this.setUserPssword(data.admin_password)
+          this.setUserInfo(data.admin_password, 'admin_password', (data) => {
+            this.userInfo.admin_password = data
+          })
           this.emptyForm()
           this.dialogVisible = false
           this.$message({
@@ -225,16 +224,16 @@ export default {
       }
 
     },
-    /** 修改密码时修改缓存 实时更新密码 */
-    setUserPssword(data) {
-      let user = JSON.parse(sessionStorage.getItem('userInfo'))
-      user.admin_password = data
-      let userInfo = JSON.stringify(user)
+    /** 实时修改缓存 */
+    setUserInfo (data, key, Callback) {
+      let user = JSON.parse(Decrypt(sessionStorage.getItem('userInfo')))
+      user[key] = data
+      let userInfo = Encrypt(JSON.stringify(user))
       sessionStorage.setItem('userInfo', userInfo)
-      this.userInfo.admin_password = data
+      Callback(data)
     },
     /**清空表单 */
-    emptyForm() {
+    emptyForm () {
       this.passwordDialogform = {}
       this.passwordDialogHeader.forEach((item) => {
         this.$set(this.passwordDialogform, item.prop, "");
@@ -247,16 +246,9 @@ export default {
       this.dialogVisible = false
     },
   },
-  mounted() {
-    //  console.log();
+  mounted () {
     this.userInfo = JSON.parse(Decrypt(this.$store.getters.userInfo))
-    // console.log(this.userInfo);
-
-    console.log(JSON.stringify(this.userInfo.img));
-    // this.setUserImg(JSON.stringify(this.userInfo.img))
-    // this.setUserImg(JSON.parse(Decrypt(this.$store.getters.userInfo)).img)
-
-    // this.emptyForm()
+    this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + this.userInfo.img
   }
 };
 </script>
