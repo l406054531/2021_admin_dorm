@@ -18,11 +18,22 @@ export function upImg(data) {
     })
 }
 
-/** 修改数据库img路径 */
-export function imgEdit(data) {
+/** 修改 */
+export function Edit(data) {
     return request({
         url: 'Admin/edit',
         method: "POST",
         data
+    })
+}
+
+/**删除 */
+export function del(admin_id) {
+    return request({
+        url: 'Admin/del',
+        method: "POST",
+        data: {
+            admin_id
+        }
     })
 }

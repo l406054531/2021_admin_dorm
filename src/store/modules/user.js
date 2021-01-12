@@ -1,5 +1,6 @@
 import { login } from '@/api/login';
 import { Message } from 'element-ui'
+import { Encrypt } from '@/utils/Crypto';
 const state = {
     get role() {
         return sessionStorage.getItem('role')
@@ -42,8 +43,8 @@ const actions = {
                     } else {
                         let role = response.data.role_name
                         let data = JSON.stringify(response.data)
-                        commit('USER_ROLE', role)
-                        commit('USER_INFO', data)
+                        commit('USER_ROLE', Encrypt(role))
+                        commit('USER_INFO', Encrypt(data))
                         resolve()
                     }
                 }

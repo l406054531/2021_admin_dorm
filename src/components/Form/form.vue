@@ -13,7 +13,8 @@
                   v-if="item.type==='input'"
                   v-model="dialogform[item.prop]"
                   :placeholder="item.placeholder"
-                  :show-password="item.show"></el-input>
+                  :show-password="item.show"
+                  :disabled="item.disabled"></el-input>
         <!-- 文本域 -->
         <el-input clearable
                   v-if="item.type==='textarea'"
@@ -95,6 +96,11 @@ export default {
 
   },
   methods: {
+    /** 父组件使用  
+     * let flag = this.$refs['passwordRef'].validateForm();
+    if (flag) {
+      this.dialogVisible = false
+    } */
     validateForm() {
       // debugger;
       let flag = null
@@ -107,14 +113,15 @@ export default {
       })
       return flag
     },
+    resetFields() {
+      this.$refs.ruleform.resetFields();
+    }
 
   },
   mounted() {
-
+    // console.log(this.$refs.ruleform);
   },
-  created() {
-
-  },
+  created() {},
 
 }
 </script>

@@ -10,16 +10,22 @@ export default {
   components: { MenuItem },
   data() {
     return {
-        addRouters:this.$store.state.permission.addRoutes 
+        addRouters:[]
     };
   },
   mounted() {
+      this.addRouters=this.$store.state.permission.addRoutes 
   },
+  destroyed(){
+      this.addRouters=null
+    //   console.log(this.addRouters);
+  }
 };
 </script>
 <style lang='scss' scoped>
 .el-aside {
  background:  rgb(221, 227, 235);
   height: 100%;
+  padding-top: 10px;
 }
 </style>

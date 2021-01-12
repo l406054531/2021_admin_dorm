@@ -53,7 +53,6 @@ const mutations = {
         state.addRoutes = routes
         state.routes = constantRoutes.concat(routes)
             // console.log(constantRoutes.concat(routes));
-
     }
 }
 
@@ -64,6 +63,14 @@ const actions = {
             let accessedRoutes = filterAsyncRoutes(pageRoutes, roles)
             commit('SET_ROUTES', accessedRoutes)
             resolve(accessedRoutes)
+        })
+    },
+    test({ commit }, roles) {
+        return new Promise(resolve => {
+            // let pageRoutes = [].concat(homeRouter, userRouters)
+            // let accessedRoutes = filterAsyncRoutes(pageRoutes, roles)
+            commit('SET_ROUTES', [])
+            resolve()
         })
     }
 }

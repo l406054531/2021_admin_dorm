@@ -1,17 +1,15 @@
 <template>
   <el-pagination @size-change="handleSizeChange"
                  @current-change="handleCurrentChange"
-                 :current-page="paging.page"
+                 :current-page="paginationInfo.page"
                  :page-sizes="[1, 20, 50, 100]"
-                 :page-size="paging.limit"
+                 :page-size="paginationInfo.limit"
                  layout="total, sizes, prev, pager, next, jumper"
                  :total="total">
   </el-pagination>
 </template>
 
 <script>
-// import { scrollTo } from '@/utils/scroll-to'
-
 export default {
   name: 'Pagination',
   props: {
@@ -19,7 +17,7 @@ export default {
       type: Number,
       default: 0
     },
-    paging: {
+    paginationInfo: {
       type: Object,
       default: function () {
         return {
@@ -33,18 +31,19 @@ export default {
       default: true
     }
   },
-  data () {
+  data() {
     return {
     }
   },
   methods: {
-    handleSizeChange (val) {
-      this.$emit('handleSizeChange', this.paging)
-      this.paging.limit = val
+    handleSizeChange(val) {
+      this.paginationInfo.limit = val
+      this.$emit('handleSizeChange', this.paginationInfo)
+
     },
-    handleCurrentChange (val) {
-      this.$emit('handleSizeChange', this.paging)
-      this.paging.page = val
+    handleCurrentChange(val) {
+      this.paginationInfo.page = val
+      this.$emit('handleSizeChange', this.paginationInfo)
     }
   },
 

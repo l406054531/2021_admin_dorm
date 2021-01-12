@@ -1,12 +1,11 @@
 import router from './router'
 import store from './store'
 const whiteList = ['/login', '/register']
+import { Decrypt } from '@/utils/Crypto';
 router.beforeEach(async(to, from, next) => {
-    document.title = to.meta.title + "-" + "Lx"
-        // document.title = "前端资料组件库"
-    let roles = store.state.user.role
+    document.title = to.meta.title + "-Lx"
+    let roles = Decrypt(store.state.user.role + "")
     if (roles) {
-        // console.log(store.state.permission.routes);
         if (store.state.permission.routes.length > 0) {
             if (to.path === '/login' || to.path === '/') {
                 next({ path: store.state.permission.addRoutes[0].path })
@@ -16,7 +15,7 @@ router.beforeEach(async(to, from, next) => {
         } else {
             const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
             router.addRoutes(accessRoutes)
-            next({...to, replace: true })
+            next(to.path)
         }
     } else {
         if (whiteList.indexOf(to.path) !== -1) {

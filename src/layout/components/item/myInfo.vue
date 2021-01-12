@@ -1,7 +1,5 @@
 <template>
-  <el-main>
-    <router-view />
-  </el-main>
+  <div></div>
 </template>
 
 <script>
@@ -14,8 +12,4 @@ export default {
 
 </script>
 <style lang='scss' scoped>
-.el-main {
-   background-color: #ededed;
-   padding-top: 30px;
-}
 </style>

@@ -6,7 +6,7 @@ export const userRouters = [{
         component: layout,
         children: [{
             path: 'index',
-            meta: { title: '管理' },
+            meta: { title: '用户管理' },
             component: () =>
                 import ('@/views/admin/admin'),
         }, {

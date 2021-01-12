@@ -49,7 +49,7 @@ export default {
     return {
       loginForm: {
         name: 'admin',
-        password: 'admin'
+        password: '123456'
       },
       pColor: '#FFE4E1'
     };

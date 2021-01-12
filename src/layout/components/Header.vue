@@ -1,36 +1,80 @@
 <template>
-  <div class="my-header">
-    <div class="logo">
-      <div>{{title}}</div>
+  <div>
+    <div class="my-header">
+      <div class="logo">
+        <div>{{title}}</div>
+      </div>
+      <el-dropdown trigger="click"
+                   @command="handleCommand"
+                   @visible-change="dropdownChange">
+        <span class="el-dropdown-link">
+          <img :src="imageUrl"
+               alt="">
+          <span> {{userInfo.user_name}} <i :class="[active?'el-icon-caret-top':'el-icon-caret-bottom' ,'el-icon--right']"></i></span>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="home">首页</el-dropdown-item>
+          <el-dropdown-item command="myInfo">个人信息</el-dropdown-item>
+          <el-dropdown-item command="editPssword">修改密码</el-dropdown-item>
+          <el-dropdown-item command="up">更改头像</el-dropdown-item>
+          <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <input type="file"
+             style="display: none"
+             ref="uploadFile"
+             accept='image/jpeg,image/png'
+             @change="upload" />
     </div>
-    <el-dropdown trigger="click"
-                 @command="handleCommand"
-                 @visible-change="dropdownChange">
-      <span class="el-dropdown-link">
-        <img :src="imageUrl"
-             alt="">
-        <span> {{userInfo.user_name}} <i :class="[active?'el-icon-caret-top':'el-icon-caret-bottom' ,'el-icon--right']"></i></span>
+    <el-dialog :title="dialogTitle"
+               :visible.sync="dialogVisible"
+               :close-on-click-modal="false"
+               :before-close="emptyForm"
+               width="32%">
+      <my-form v-if="this.dialogTitle=='个人信息'"
+               :rules="rulesInfo"
+               :dialogform="infoDialogform"
+               :appdialogHeader="infoDialogHeader"
+               labelWidth="80px"></my-form>
+      <my-form ref="passwordRef"
+               v-if="this.dialogTitle=='修改密码'"
+               :rules="rulesPassword"
+               :dialogform="passwordDialogform"
+               :appdialogHeader="passwordDialogHeader"
+               labelWidth="80px"></my-form>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="emptyForm">取 消</el-button>
+        <el-button type="primary"
+                   @click="editPassword"
+                   v-if="this.dialogTitle=='修改密码'?true:false">确 定</el-button>
       </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="home">首页</el-dropdown-item>
-        <el-dropdown-item command="up">更改头像
-        </el-dropdown-item>
-        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-    <input type="file"
-           class="uploadFile"
-           ref="uploadFile"
-           accept='image/jpeg,image/png'
-           @change="upload" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import { imgEdit, upImg } from '@/api/admin';
+import { Edit, upImg } from '@/api/admin';
+import { Decrypt } from '@/utils/Crypto';
 export default {
-  data () {
+  data() {
+    const password = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请输入原密码'));
+      }
+      if (this.passwordDialogform.password !== this.userInfo.admin_password) {
+        return callback(new Error('原密码不正确'));
+      }
+    }
+    const confirm_password = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请二次输入密码'));
+      }
+      if (this.passwordDialogform.new_password !== this.passwordDialogform.confirm_password) {
+        return callback(new Error('两次密码输入不正确'));
+      }
+    }
     return {
       title: 'LOGO',
       imageUrl: "",//图片路径
@@ -38,33 +82,89 @@ export default {
       appCode: '418783FDA9E0090B1C990AE816ACDCE3',//应用Code标识 
       diyPath: 'images/',//自定义路径,
       userInfo: {},//用户信息
+      dialogVisible: false,//弹框状态
+      dialogTitle: '修改密码',//弹框标题
+      infoTitle: '个人信息',//弹框标题
+      passwordTitle: '修改密码',//弹框标题
+      rulesInfo: {},//个人信息校验
+      rulesPassword: {
+        password: { required: true, validator: password, trigger: 'blur' },
+        new_password: { required: true, message: "请输入新密码", trigger: 'blur' },
+        confirm_password: { required: true, validator: confirm_password, trigger: 'blur' }
+      },//修改密码校验
+      infoDialogform: {},//个人信息model
+      passwordDialogform: {
+        password: '',
+        new_password: '',
+        confirm_password: '',
+      },//修改密码model
+      infoDialogHeader: [{//个人信息input
+        label: '用户名',
+        type: 'input',
+        prop: 'user_name',
+        disabled: true
+      }, {
+        label: '账号',
+        type: 'input',
+        prop: 'admin_name',
+        disabled: true
+      }, {
+        label: '角色名',
+        type: 'input',
+        prop: 'role_name',
+        disabled: true
+      }],
+      passwordDialogHeader: [{//修改密码input
+        label: '原密码',
+        type: 'input',
+        prop: 'password',
+      }, {
+        label: '新密码',
+        type: 'input',
+        prop: 'new_password',
+        show: true
+      }, {
+        label: '确认密码',
+        type: 'input',
+        prop: 'confirm_password',
+        show: true
+      },
+      ]
     };
   },
   methods: {
     /**退出登录 */
-    logout () {
+    logout() {
       sessionStorage.clear();
-      this.$router.push('/login')
+      //   this.$router.push('/login')
+      this.$router.go(0)
     },
     /**返回首页 */
-    homepage () {
+    homepage() {
       let path = this.$store.getters.permission_routes[0].redirect
       this.$router.push(path)
     },
-    handleCommand (command) {
+    handleCommand(command) {
       if (command == "logout") {
         this.logout()
       } else if (command == "home") {
         this.homepage()
       } else if (command == "up") {
         this.$refs.uploadFile.click();
+      } else if (command == 'myInfo') {
+        this.dialogVisible = true
+        this.dialogTitle = this.infoTitle
+        this.getInfo(this.userInfo)
+      } else if (command == 'editPssword') {
+        this.dialogVisible = true
+        this.dialogTitle = this.passwordTitle
       }
     },
-    dropdownChange (e) {
+    dropdownChange(e) {
       this.active = e
     },
     /**上传头像 */
-    upload () {
+    upload() {
       let file = this.$refs.uploadFile.files[0];
       let postData = new FormData();
       postData.append('file', file);
@@ -81,8 +181,9 @@ export default {
           let data = {}
           data.admin_id = this.userInfo.admin_id
           data.img = response.data.url
-          this.imgEdit(data)
-          this.setUserInfo(response.data.url)
+          /**修改数据库img路径 */
+          Edit(data).then(response => { })
+          this.setUserImg(response.data.url)
           this.dialogVisible = false
         }
         else {
@@ -93,22 +194,69 @@ export default {
         }
       });
     },
-    /**修改数据库img路径 */
-    imgEdit (data) {
-      imgEdit(data).then(response => { })
-    },
     /** 修改头像时修改缓存 实时更新头像 */
-    setUserInfo (data) {
+    setUserImg(data) {
       let user = JSON.parse(sessionStorage.getItem('userInfo'))
       user.img = data
       let userInfo = JSON.stringify(user)
       sessionStorage.setItem('userInfo', userInfo)
       this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + data
-    }
+    },
+    /**获取个人信息 */
+    getInfo(info) {
+      this.infoDialogform = info
+    },
+    /**确认修改密码 */
+    async editPassword() {
+      let flag = await this.$refs.passwordRef.validateForm();
+      if (flag == null) {
+        let data = {}
+        data.admin_id = this.userInfo.admin_id
+        data.admin_password = this.passwordDialogform.confirm_password
+        Edit(data).then(response => {
+          this.setUserPssword(data.admin_password)
+          this.emptyForm()
+          this.dialogVisible = false
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        })
+      }
+
+    },
+    /** 修改密码时修改缓存 实时更新密码 */
+    setUserPssword(data) {
+      let user = JSON.parse(sessionStorage.getItem('userInfo'))
+      user.admin_password = data
+      let userInfo = JSON.stringify(user)
+      sessionStorage.setItem('userInfo', userInfo)
+      this.userInfo.admin_password = data
+    },
+    /**清空表单 */
+    emptyForm() {
+      this.passwordDialogform = {}
+      this.passwordDialogHeader.forEach((item) => {
+        this.$set(this.passwordDialogform, item.prop, "");
+      });
+      if (this.dialogTitle == '修改密码') {
+        this.$nextTick(() => {
+          this.$refs.passwordRef.resetFields()
+        })
+      }
+      this.dialogVisible = false
+    },
   },
-  mounted () {
-    this.userInfo = JSON.parse(this.$store.getters.userInfo)
-    this.setUserInfo(this.userInfo.img)
+  mounted() {
+    //  console.log();
+    this.userInfo = JSON.parse(Decrypt(this.$store.getters.userInfo))
+    // console.log(this.userInfo);
+
+    console.log(JSON.stringify(this.userInfo.img));
+    // this.setUserImg(JSON.stringify(this.userInfo.img))
+    // this.setUserImg(JSON.parse(Decrypt(this.$store.getters.userInfo)).img)
+
+    // this.emptyForm()
   }
 };
 </script>
@@ -119,7 +267,7 @@ export default {
   left: 0;
   z-index: 2;
   width: 100%;
-  height: 60px;
+  height: 70px;
   line-height: 60px;
   background-color: rgb(211, 218, 226);
   color: #000;
@@ -134,30 +282,19 @@ export default {
     float: right;
     margin-right: 50px;
     height: 100%;
+    padding-top: 3px;
     cursor: pointer;
     .el-dropdown-link {
       display: flex;
       justify-content: space-around;
       img {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         margin: auto 8px;
-        // line-height: 45px;
+        line-height: 45px;
         border-radius: 50%;
       }
     }
-    // .el-dropdown-menu {
-    //   .el-dropdown-item {
-    //     .uploadFile {
-    //       color: red;
-    //     }
-    //   }
-    // }
-  }
-}
-::v-deep {
-  input {
-    display: none;
   }
 }
 </style>
