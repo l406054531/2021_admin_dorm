@@ -4,7 +4,9 @@ const whiteList = ['/login', '/register']
 import { Decrypt } from '@/utils/Crypto';
 router.beforeEach(async(to, from, next) => {
     document.title = to.meta.title + "-Lx"
-    let roles = Decrypt(store.state.user.role + "")
+    let roles = store.state.user.role
+        // let roles = Decrypt(store.state.user.role + "")
+
     if (roles) {
         if (store.state.permission.routes.length > 0) {
             if (to.path === '/login' || to.path === '/') {

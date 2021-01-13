@@ -2,6 +2,8 @@
   <div>
     <div class="my-header">
       <div class="logo">
+        <p v-if="this.radio=='员工'"> 员工</p>
+        <p v-if="this.radio=='学生'"> 学生</p>
         <div>{{title}}</div>
       </div>
       <el-dropdown trigger="click"
@@ -57,8 +59,10 @@
 import axios from 'axios'
 import { Edit, upImg } from '@/api/admin';
 import { Encrypt, Decrypt } from '@/utils/Crypto';
+import { getRadio } from '@/utils/cache';
+import { getUserInfo, setUserInfo } from '@/utils/cache';
 export default {
-  data () {
+  data() {
     const password = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('请输入原密码'));
@@ -128,23 +132,23 @@ export default {
         type: 'input',
         prop: 'confirm_password',
         show: true
-      },
-      ]
+      },],
+      radio: ''
     };
   },
   methods: {
     /**退出登录 */
-    logout () {
+    logout() {
       sessionStorage.clear();
       //   this.$router.push('/login')
       this.$router.go(0)
     },
     /**返回首页 */
-    homepage () {
+    homepage() {
       let path = this.$store.getters.permission_routes[0].redirect
       this.$router.push(path)
     },
-    handleCommand (command) {
+    handleCommand(command) {
       if (command == "logout") {
         this.logout()
       } else if (command == "home") {
@@ -162,11 +166,11 @@ export default {
         this.dialogTitle = this.passwordTitle
       }
     },
-    dropdownChange (e) {
+    dropdownChange(e) {
       this.active = e
     },
     /**上传头像 */
-    upload () {
+    upload() {
       let file = this.$refs.uploadFile.files[0];
       let postData = new FormData();
       postData.append('file', file);
@@ -204,7 +208,7 @@ export default {
     //   this.infoDialogform = info
     // },
     /**确认修改密码 */
-    async editPassword () {
+    async editPassword() {
       let flag = await this.$refs.passwordRef.validateForm();
       if (flag == null) {
         let data = {}
@@ -225,15 +229,14 @@ export default {
 
     },
     /** 实时修改缓存 */
-    setUserInfo (data, key, Callback) {
-      let user = JSON.parse(Decrypt(sessionStorage.getItem('userInfo')))
-      user[key] = data
-      let userInfo = Encrypt(JSON.stringify(user))
-      sessionStorage.setItem('userInfo', userInfo)
+    setUserInfo(data, key, Callback) {
+      let userInfo =  this.userInfo
+       userInfo[key]=data
+      setUserInfo(JSON.stringify(userInfo))
       Callback(data)
     },
     /**清空表单 */
-    emptyForm () {
+    emptyForm() {
       this.passwordDialogform = {}
       this.passwordDialogHeader.forEach((item) => {
         this.$set(this.passwordDialogform, item.prop, "");
@@ -246,8 +249,8 @@ export default {
       this.dialogVisible = false
     },
   },
-  mounted () {
-    this.userInfo = JSON.parse(Decrypt(this.$store.getters.userInfo))
+  mounted() {
+    this.userInfo = JSON.parse(this.$store.getters.userInfo)
     this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + this.userInfo.img
   }
 };

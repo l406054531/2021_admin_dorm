@@ -5,16 +5,24 @@ export const userRouters = [{
         redirect: '/admin/index',
         component: layout,
         children: [{
-            path: 'index',
-            meta: { title: '用户管理' },
-            component: () =>
-                import ('@/views/admin/admin'),
-        }, {
-            path: 'test',
-            meta: { title: '测试' },
-            component: () =>
-                import ('@/views/test/test'),
-        }, ]
+                path: 'index',
+                meta: { title: '用户管理' },
+                component: () =>
+                    import ('@/views/admin/admin'),
+            },
+            {
+                path: 'roles',
+                meta: { title: '角色管理' },
+                component: () =>
+                    import ('@/views/roles/index'),
+            },
+            {
+                path: 'test',
+                meta: { title: '测试' },
+                component: () =>
+                    import ('@/views/test/test'),
+            },
+        ]
     },
     {
         path: '/test2',

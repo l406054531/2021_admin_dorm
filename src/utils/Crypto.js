@@ -10,11 +10,11 @@ const KEY = 'jpA9SeLJrgvDYWud' // 密钥
  * @constructor
  */
 export function Encrypt(word, key) {
-  key = key || KEY
-  let keyStr = CryptoJS.enc.Utf8.parse(key)
-  let srcs = CryptoJS.enc.Utf8.parse(word)
-  let encrypted = CryptoJS.AES.encrypt(srcs, keyStr, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
-  return encrypted.toString()
+    key = key || KEY
+    let keyStr = CryptoJS.enc.Utf8.parse(key)
+    let srcs = CryptoJS.enc.Utf8.parse(word)
+    let encrypted = CryptoJS.AES.encrypt(srcs, keyStr, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+    return encrypted.toString()
 }
 
 /**
@@ -25,8 +25,8 @@ export function Encrypt(word, key) {
  * @constructor
  */
 export function Decrypt(word, key) {
-  key = key || KEY
-  let keyStr = CryptoJS.enc.Utf8.parse(key)
-  let decrypt = CryptoJS.AES.decrypt(word, keyStr, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
-  return CryptoJS.enc.Utf8.stringify(decrypt).toString()
+    key = key || KEY
+    let keyStr = CryptoJS.enc.Utf8.parse(key)
+    let decrypt = CryptoJS.AES.decrypt(word, keyStr, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+    return CryptoJS.enc.Utf8.stringify(decrypt).toString()
 }

@@ -65,7 +65,7 @@ export default {
         { label: '用户名', prop: 'user_name' },
         { label: '账号', prop: 'admin_name' },
         { label: '权限名称', prop: 'role_name' },
-        { label: '操作', prop: 'role_name', },
+        { label: '操作', prop: ' operate', },
       ],
       tableKey: null,
       paginationInfo: {

@@ -29,13 +29,19 @@
                class="iconfont icon-mima"></i>
           </el-input>
         </el-form-item>
+        <!-- <el-form-item>
+          <el-radio-group v-model="radio"
+                          size="medium">
+            <el-radio-button label="员工"></el-radio-button>
+            <el-radio-button label="学生"></el-radio-button>
+          </el-radio-group>
+        </el-form-item> -->
         <el-form-item>
           <el-button @click="userLogin">登 录</el-button>
           <el-link icon="el-icon-edit"
                    @click="toRegister"
                    :underline="false">注册账号</el-link>
         </el-form-item>
-
       </el-form>
     </div>
   </div>
@@ -45,26 +51,27 @@
 import particles from '@/components/Particles/src/main';
 export default {
   components: { particles },
-  data () {
+  data() {
     return {
       loginForm: {
         name: 'admin',
         password: '123456'
       },
+      radio: '员工',
       pColor: '#FFE4E1'
     };
   },
   methods: {
-    userLogin () {
+    userLogin() {
       let data = {}
       data.admin_name = this.loginForm.name;
       data.admin_password = this.loginForm.password;
       this.$store.dispatch('user/login', data).then(response => {
+        this.$store.dispatch('radio/setRadio', this.radio)
         this.$router.push('/')
       })
     },
-    toRegister () {
-      console.log('1');
+    toRegister() {
       this.$router.push('/register')
     }
   }
