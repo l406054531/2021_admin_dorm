@@ -53,6 +53,7 @@ const actions = {
     routers({ commit, state }, router) {
         return new Promise((resolve, reject) => {
             router = JSON.stringify(router);
+            // console.log(router);
             commit("USER_ROUTERS", router)
             setRouters(router)
             resolve()

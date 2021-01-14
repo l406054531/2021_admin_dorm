@@ -28,14 +28,22 @@ export const userRouters = [{
     },
     {
         path: '/test2',
+        name: 'test2',
         meta: { title: '测试2', roles: ['admin', 'test'], icon: 'icon-guanli' },
         redirect: '/test2/index',
         component: layout,
         children: [{
-            path: 'index',
-            meta: { title: '测试2' },
-            component: () =>
-                import ('@/views/test2/test2'),
-        }, ]
+                path: 'index',
+                meta: { title: '测试2' },
+                component: () =>
+                    import ('@/views/test2/test2'),
+            },
+            {
+                path: 'test',
+                meta: { title: '测试' },
+                component: () =>
+                    import ('@/views/test/test'),
+            },
+        ]
     },
 ]

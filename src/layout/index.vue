@@ -19,7 +19,7 @@ import Main from "./components/Main";
 import { getRouters } from '@/utils/cache';
 export default {
   components: { Aside, Header, Main },
-  data() {
+  data () {
     return {
       list: [],
       roles: '',
@@ -27,13 +27,13 @@ export default {
     };
   },
   methods: {
-    formatRouterTree(data) {
+    formatRouterTree (data) {
       let parents = data.filter(p => p.pid === 0),
         children = data.filter(c => c.pid !== 0);
 
       dataToTree(parents, children);
 
-      function dataToTree(parents, children) {
+      function dataToTree (parents, children) {
         parents.map((p) => {
           children.map((c, i) => {
             if (c.pid === p.id) {
@@ -52,48 +52,35 @@ export default {
       }
       return parents;
     },
-    recursionRouter(userRouter, allRouter) {
+    recursionRouter (userRouter, allRouter) {
       var realRoutes = []
+      let arr = []
       allRouter.forEach((v) => {
-
         userRouter.forEach((item) => {
-          // console.log(item);
           if (v.name == item.page_name) {
-            // console.log(item);
-            console.log(v);
-            //   console.log(item.page_name);
-            //   console.log(item);
-            // v.children = recursionRouter(userRouter, v.children)
-            // console.log(item.page_name);
-
-            // console.log(v.children);
-
-            realRoutes.push(v)
+            arr.push(v)
           }
-          if (v.children instanceof Array) {
-            v.children.forEach(c => {
-              if (c.name === item.page_name) {
-                console.log(c);
-             
+          arr.forEach(parent => {
+            parent.children.forEach(children => {
+              if (children.name == item.page_name) {
+                parent.children = []
+                parent.children.push(children)
+                realRoutes.push(parent)
               }
             })
-          }
-
+          })
         })
+
       })
+      console.log(realRoutes);
       return realRoutes
     },
-    test() {
-      //     let a = this.formatRouterTree(this.list)
-      //     console.log(a);
+    test () {
       this.recursionRouter(this.list, this.$store.state.permission.routes)
-      //   console.log(a);
-      // console.log(this.recursionRouter(this.list, this.r));
-      //   this.recursionRouter()
     },
 
   },
-  mounted() {
+  mounted () {
     //   console.log(JSON.parse(this.$store.getters.routers));
     // this.roles = this.$store.getters.role
     this.list = JSON.parse(this.$store.getters.routers)
