@@ -6,3 +6,12 @@ export function getRolesList(data) {
         params: data
     })
 }
+export function getPages(role) {
+    return request({
+        url: 'Roles/getList',
+        method: "GET",
+        params: {
+            role
+        }
+    })
+}

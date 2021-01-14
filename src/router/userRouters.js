@@ -1,11 +1,13 @@
 import layout from "@/layout"
 export const userRouters = [{
         path: '/admin',
+        name: 'admin',
         meta: { title: '管理', roles: ['admin'], icon: 'icon-guanli' },
         redirect: '/admin/index',
         component: layout,
         children: [{
                 path: 'index',
+                name: 'yonghuguanli',
                 meta: { title: '用户管理' },
                 component: () =>
                     import ('@/views/admin/admin'),

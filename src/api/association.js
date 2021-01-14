@@ -1,10 +1,8 @@
 import request from '@/utils/request'
-export function getPages(role_name) {
+export function getPages(data) {
     return request({
-        url: 'Association/get',
+        url: 'Association/getList',
         method: "GET",
-        params: {
-            role_name
-        }
+        params: data
     })
 }

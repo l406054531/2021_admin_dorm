@@ -49,6 +49,8 @@
 
 <script>
 import particles from '@/components/Particles/src/main';
+import { getPages } from '@/api/association';
+import { setRouters } from '@/utils/cache';
 export default {
   components: { particles },
   data() {
@@ -62,11 +64,20 @@ export default {
     };
   },
   methods: {
-    userLogin() {
+    async userLogin() {
       let data = {}
       data.admin_name = this.loginForm.name;
       data.admin_password = this.loginForm.password;
-      this.$store.dispatch('user/login', data).then(response => {
+      await this.$store.dispatch('user/login', data).then(response => {
+        let where = {}
+        let data = {}
+        where.role_name = this.$store.state.user.role
+        data.where = JSON.stringify(where);
+        getPages(data).then(response => {
+            this.$store.dispatch('user/routers', response.data)
+        //   let data = JSON.stringify(response.data);
+        //   setRouters(data)
+        })
         this.$store.dispatch('radio/setRadio', this.radio)
         this.$router.push('/')
       })

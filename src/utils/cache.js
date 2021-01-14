@@ -1,10 +1,9 @@
 import { Encrypt, Decrypt } from './Crypto';
-import Cookies from 'js-cookie'
-
 
 const radioKey = Encrypt('radio')
 const roleKey = Encrypt('role')
 const infoKey = Encrypt('userInfo')
+const routersKyt = 'routers'
 
 function setRadio(val) {
     return sessionStorage.setItem(radioKey, Encrypt(val))
@@ -30,11 +29,23 @@ function getUserInfo() {
     return Decrypt(sessionStorage.getItem(infoKey) + "")
 }
 
+function setRouters(val) {
+    // return sessionStorage.setItem(routersKyt, Encrypt(val))
+    return sessionStorage.setItem(routersKyt, val)
+}
+
+function getRouters() {
+    return sessionStorage.getItem(routersKyt)
+}
+
+
 export {
     setRadio,
     getRadio,
     setRole,
     getRole,
     setUserInfo,
-    getUserInfo
+    getUserInfo,
+    setRouters,
+    getRouters
 }

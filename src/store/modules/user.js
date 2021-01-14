@@ -1,10 +1,11 @@
 import { login } from '@/api/login';
 import { Message } from 'element-ui'
 import { Encrypt } from '@/utils/Crypto';
-import { setRole, getRole, getUserInfo, setUserInfo } from '@/utils/cache';
+import { setRole, getRole, getUserInfo, setUserInfo, getRouters, setRouters } from '@/utils/cache';
 const state = {
     role: getRole(),
-    userInfo: getUserInfo()
+    userInfo: getUserInfo(),
+    routers: getRouters()
         // get userInfo() {
         //     return sessionStorage.getItem('userInfo')
         // },
@@ -19,6 +20,9 @@ const mutations = {
     USER_INFO(state, info) {
         state.userInfo = info
     },
+    USER_ROUTERS(state, routers) {
+        state.routers = routers
+    }
 }
 const actions = {
     login({ commit, state }, usetInfo) {
@@ -46,6 +50,14 @@ const actions = {
             })
         })
     },
+    routers({ commit, state }, router) {
+        return new Promise((resolve, reject) => {
+            router = JSON.stringify(router);
+            commit("USER_ROUTERS", router)
+            setRouters(router)
+            resolve()
+        })
+    }
 }
 
 
