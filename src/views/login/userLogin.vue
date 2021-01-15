@@ -64,23 +64,17 @@ export default {
     };
   },
   methods: {
-    async userLogin() {
+    userLogin() {
       let data = {}
       data.admin_name = this.loginForm.name;
       data.admin_password = this.loginForm.password;
-      await this.$store.dispatch('user/login', data).then(response => {
-        let where = {}
-        let data = {}
-        where.role_name = this.$store.state.user.role
-        data.where = JSON.stringify(where);
-        getPages(data).then(response => {
-            this.$store.dispatch('user/routers', response.data)
-        //   let data = JSON.stringify(response.data);
-        //   setRouters(data)
+      this.$store.dispatch('user/login', data).then(response => {
+        this.$store.dispatch('user/userRouters', this.$store.getters.role).then(response => {
+          this.$router.push('/')
         })
         this.$store.dispatch('radio/setRadio', this.radio)
-        this.$router.push('/')
       })
+
     },
     toRegister() {
       this.$router.push('/register')

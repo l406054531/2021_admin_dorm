@@ -14,12 +14,14 @@ export const userRouters = [{
             },
             {
                 path: 'roles',
+                name: 'jueseguanli',
                 meta: { title: '角色管理' },
                 component: () =>
                     import ('@/views/roles/index'),
             },
             {
                 path: 'test',
+                name: 'test',
                 meta: { title: '测试' },
                 component: () =>
                     import ('@/views/test/test'),
@@ -34,16 +36,18 @@ export const userRouters = [{
         component: layout,
         children: [{
                 path: 'index',
+                name: 'test2',
                 meta: { title: '测试2' },
                 component: () =>
                     import ('@/views/test2/test2'),
             },
-            {
-                path: 'test',
-                meta: { title: '测试' },
-                component: () =>
-                    import ('@/views/test/test'),
-            },
+            // {
+            //     path: 'test',
+            //     name: 'test',
+            //     meta: { title: '测试' },
+            //     component: () =>
+            //         import ('@/views/test/test'),
+            // },
         ]
     },
 ]

@@ -7,6 +7,7 @@ export const homeRouter = [{
         component: layout,
         children: [{
                 path: 'index',
+                name: 'home',
                 meta: { title: '首页' },
                 component: () =>
                     import ('@/views/homepage/index.vue'),

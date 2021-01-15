@@ -6,3 +6,18 @@ export function getPages(data) {
         params: data
     })
 }
+
+export function getAllPages() {
+    return request({
+        url: 'Association/getList',
+        method: "GET",
+    })
+}
+
+export function addUserPages(data) {
+    return request({
+        url: 'Association/add',
+        method: "POST",
+        data
+    })
+}

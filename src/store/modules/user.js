@@ -1,17 +1,18 @@
 import { login } from '@/api/login';
 import { Message } from 'element-ui'
 import { Encrypt } from '@/utils/Crypto';
+import { getPages } from '@/api/association';
 import { setRole, getRole, getUserInfo, setUserInfo, getRouters, setRouters } from '@/utils/cache';
 const state = {
     role: getRole(),
     userInfo: getUserInfo(),
-    routers: getRouters()
-        // get userInfo() {
-        //     return sessionStorage.getItem('userInfo')
-        // },
-        // set userInfo(value) {
-        //     return sessionStorage.setItem('userInfo', value)
-        // },
+    routers: getRouters(), // 用户授权的页面
+    // get userInfo() {
+    //     return sessionStorage.getItem('userInfo')
+    // },
+    // set userInfo(value) {
+    //     return sessionStorage.setItem('userInfo', value)
+    // },
 }
 const mutations = {
     USER_ROLE(state, role) {
@@ -41,7 +42,7 @@ const actions = {
                         let data = JSON.stringify(response.data)
                         commit('USER_INFO', data)
                         setUserInfo(data)
-                        resolve()
+                        resolve(response)
                     }
                 }
 
@@ -50,13 +51,32 @@ const actions = {
             })
         })
     },
-    routers({ commit, state }, router) {
+    // routers({ commit, state }, data) {
+    //     // debugger
+    //     return new Promise((resolve, reject) => {
+    //         let router = JSON.stringify(data);
+    //         // console.log(router);
+    //         // console.log(data);
+    //         commit("USER_ROUTERS", data)
+    //         setRouters(router)
+    //         resolve()
+    //     })
+    // },
+    userRouters({ commit, state }, role) {
+        let where = {}
+        let data = {}
+        where.role_name = role
+        data.where = JSON.stringify(where);
         return new Promise((resolve, reject) => {
-            router = JSON.stringify(router);
-            // console.log(router);
-            commit("USER_ROUTERS", router)
-            setRouters(router)
-            resolve()
+            getPages(data).then(response => {
+                // console.log(response.data);
+                let router = JSON.stringify(response.data);
+                // // console.log(router);
+                commit("USER_ROUTERS", router)
+                setRouters(router)
+                resolve(response.data)
+            })
+
         })
     }
 }

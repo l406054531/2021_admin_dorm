@@ -3,7 +3,7 @@ import { Encrypt, Decrypt } from './Crypto';
 const radioKey = Encrypt('radio')
 const roleKey = Encrypt('role')
 const infoKey = Encrypt('userInfo')
-const routersKyt = 'routers'
+const routersKyt = Encrypt('routers')
 
 function setRadio(val) {
     return sessionStorage.setItem(radioKey, Encrypt(val))
@@ -31,11 +31,11 @@ function getUserInfo() {
 
 function setRouters(val) {
     // return sessionStorage.setItem(routersKyt, Encrypt(val))
-    return sessionStorage.setItem(routersKyt, val)
+    return sessionStorage.setItem(routersKyt, Encrypt(val))
 }
 
 function getRouters() {
-    return sessionStorage.getItem(routersKyt)
+    return Decrypt(sessionStorage.getItem(routersKyt) + "")
 }
 
 

@@ -27,31 +27,7 @@ export default {
     };
   },
   methods: {
-    formatRouterTree (data) {
-      let parents = data.filter(p => p.pid === 0),
-        children = data.filter(c => c.pid !== 0);
-
-      dataToTree(parents, children);
-
-      function dataToTree (parents, children) {
-        parents.map((p) => {
-          children.map((c, i) => {
-            if (c.pid === p.id) {
-              let _c = JSON.parse(JSON.stringify(children));
-              _c.splice(i, 1);
-              dataToTree([c], _c);
-
-              if (p.children) {
-                p.children.push(c);
-              } else {
-                p.children = [c];
-              }
-            }
-          })
-        })
-      }
-      return parents;
-    },
+   
     recursionRouter (userRouter, allRouter) {
       var realRoutes = []
       let arr = []
@@ -70,9 +46,8 @@ export default {
             })
           })
         })
-
       })
-      console.log(realRoutes);
+    //   console.log(realRoutes);
       return realRoutes
     },
     test () {
@@ -83,12 +58,12 @@ export default {
   mounted () {
     //   console.log(JSON.parse(this.$store.getters.routers));
     // this.roles = this.$store.getters.role
-    this.list = JSON.parse(this.$store.getters.routers)
+    // this.list = JSON.parse(this.$store.getters.routers)
     // console.log(this.list);
     // this.r = this.$store.state.permission.routes
     // console.log(this.r);
     // console.log(this.$store.state.permission.routes);
-    this.test()
+    // this.test()
     // console.log(this.recursionRouter);
 
   }
