@@ -1,38 +1,79 @@
 <template>
   <div>
-    <el-button @click="SaveMenuCheckeds">保存</el-button>
     <el-tree :data="data"
              ref="tree"
-             show-checkbox
              node-key="id"
-             :default-expanded-keys="expandedId"
-             :default-checked-keys="checkedId"
-             :props="defaultProps">
+             :default-expanded-keys="expandedKyes"
+             :props="defaultProps"
+             default-expand-all
+             :expand-on-click-node="false">
+      <span class="custom-tree-node"
+            slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <span>
+          <el-button type="text"
+                     size="mini"
+                     @click="() => append(data)">
+            Append
+          </el-button>
+          <el-button type="text"
+                     size="mini"
+                     @click="() => remove(node, data)">
+            Delete
+          </el-button>
+        </span>
+      </span>
     </el-tree>
+    <el-dialog title="添加页面"
+               :visible.sync="dialogVisible"
+               width="30%">
+      <el-form ref="addformRef"
+               :model="addform"
+               label-width="80px">
+        <el-form-item label="标题">
+          <el-input v-model="addform.title"></el-input>
+        </el-form-item>
+        <el-form-item label="name值">
+          <el-input v-model="addform.name"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="addPages">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAllPages,getRouters } from '@/api/association';
+import { getRouters, addUserPages } from '@/api/association';
+import { addPages, getAllPages } from '@/api/pages';
 export default {
-  data() {
+  data () {
     return {
       data: [],
-      roleData: [],//用户授权到的页面
       defaultProps: {
         children: 'children',
         label: 'title'
       },
-      checkedId: [],
-      expandedId: []
+      expandedKyes: [],
+      dialogVisible: false,
+      addform: {
+        pid: '',
+        title: '',
+        name: ''
+      }
     };
   },
   methods: {
-    formatRouterTree(data) {
+    formatRouterTree (data) {
       let parents = data.filter(p => p.pid === 0),
         children = data.filter(c => c.pid !== 0);
       dataToTree(parents, children);
-      function dataToTree(parents, children) {
+      function dataToTree (parents, children) {
         parents.map((p) => {
           children.map((c, i) => {
             if (c.pid === p.id) {
@@ -51,32 +92,30 @@ export default {
       }
       return parents;
     },
-    SaveMenuCheckeds() {
-      let all = this.$refs.tree.getCheckedNodes(false, true).map((item) => {
-        return item
-      })
-      console.log(all);
-    },
-    getAllPages() {
+    getAllPages () {
       getAllPages().then(response => {
+        console.log(response.data);
         this.data = this.formatRouterTree(response.data)
-        this.roleData = this.formatRouterTree(this.$store.getters.routers)
-        this.checkedId = this.roleData.map(item => {
+        // console.log(this.data);
+        this.expandedKyes = this.data.map(item => {
           return item.id
         })
-        this.expandedId = this.roleData.map(item => {
-          if (item.children instanceof Array) {
-            if (item.children.length > 0) {
-              return item.id
-            }
-          }
-        })
-
       })
     },
-    
+    append (data) {
+      console.log(data);
+      this.dialogVisible = true
+      this.addform.pid = data.id
+    },
+    remove (data) { },
+    addPages () {
+      addPages(this.addform).then(response => {
+        this.dialogVisible = false
+        console.log(response);
+      })
+    },
   },
-  mounted() {
+  mounted () {
     this.getAllPages()
 
 
@@ -84,4 +123,12 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
 </style>

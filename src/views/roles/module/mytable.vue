@@ -13,11 +13,18 @@
           <template slot-scope="scope">
             <el-button type="text"
                        size="small"
-                       @click="handleEdit(scope.row)"><i class="el-icon-edit" /> 编辑</el-button>
+                       @click="handleEdit(scope.row)"><i class="el-icon-edit" /> 用户权限</el-button>
             <el-button type="text"
                        size="small"
                        @click="handleDelete(scope.row)"><i class="el-icon-delete" /> 删除</el-button>
           </template>
+        </el-table-column>
+        <el-table-column v-else-if="item.label=='#'"
+                         type="index"
+                         :label="item.label"
+                         :key="index"
+                         width="80"
+                         align="center">
         </el-table-column>
         <el-table-column v-else
                          :label="item.label"
@@ -43,7 +50,7 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       tableData: [],
       paging: {
@@ -54,7 +61,7 @@ export default {
     };
   },
   methods: {
-    getList(params) {
+    getList (params) {
       getRolesList(params).then(response => {
         if (response.code == 1) {
           this.tableData = response.data
@@ -64,15 +71,15 @@ export default {
       })
     },
     /**编辑 */
-    handleEdit(data) {
+    handleEdit (data) {
       this.$emit('handleEdit', data)
     },
     /**点击删除 */
-    handleDelete(data) {
+    handleDelete (data) {
       this.$emit('handleDelete', data)
     },
   },
-  mounted() {
+  mounted () {
     this.getList(this.params)
   },
 }

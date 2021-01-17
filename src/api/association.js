@@ -7,17 +7,29 @@ export function getPages(data) {
     })
 }
 
-export function getAllPages() {
-    return request({
-        url: 'Association/getList',
-        method: "GET",
-    })
-}
+// export function getAllPages() {
+//     return request({
+//         url: 'Pages/getList',
+//         method: "GET",
+//         params: { nopage: 1 }
+//     })
+// }
 
-export function addUserPages(data) {
+export function addUserAssociation(data) {
     return request({
         url: 'Association/add',
         method: "POST",
         data
+    })
+}
+
+export function delUserAssociation(id) {
+    return request({
+        url: 'Association/del',
+        method: "POST",
+        data: {
+            id,
+            nopage: 1
+        }
     })
 }
