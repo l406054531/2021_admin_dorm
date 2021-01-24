@@ -23,13 +23,12 @@ export function addUserAssociation(data) {
     })
 }
 
-export function delUserAssociation(id) {
+export function delUserAssociation(a_id) {
     return request({
         url: 'Association/del',
         method: "POST",
         data: {
-            id,
-            nopage: 1
+            a_id,
         }
     })
 }

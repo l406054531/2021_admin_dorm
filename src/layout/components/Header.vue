@@ -6,8 +6,7 @@
         <p v-if="this.radio=='学生'"> 学生</p>
         <div>{{title}}</div>
       </div>
-      <el-dropdown trigger="click"
-                   @command="handleCommand"
+      <el-dropdown @command="handleCommand"
                    @visible-change="dropdownChange">
         <span class="el-dropdown-link">
           <img :src="imageUrl"
@@ -230,8 +229,8 @@ export default {
     },
     /** 实时修改缓存 */
     setUserInfo(data, key, Callback) {
-      let userInfo =  this.userInfo
-       userInfo[key]=data
+      let userInfo = this.userInfo
+      userInfo[key] = data
       setUserInfo(JSON.stringify(userInfo))
       Callback(data)
     },

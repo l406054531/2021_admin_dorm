@@ -32,9 +32,7 @@
           <span>{{ item.meta.title }}</span>
         </el-menu-item>
       </div>
-
     </el-menu>
-
   </div>
 </template>
 

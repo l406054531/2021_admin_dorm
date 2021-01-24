@@ -25,6 +25,7 @@
                ref="tree"
                show-checkbox
                node-key="id"
+               @check-change="nodeClick"
                :default-expanded-keys="expandedId"
                :default-checked-keys="checkedId"
                :props="defaultProps">
@@ -41,7 +42,7 @@ import { getPages, addUserAssociation, delUserAssociation } from '@/api/associat
 import { getAllPages } from '@/api/pages';
 export default {
   components: { mytable },
-  data () {
+  data() {
     return {
       //表格表头
       tableHeader: [
@@ -64,15 +65,16 @@ export default {
       },
       checkedId: [],
       expandedId: [],
-      role_name: ''
+      role_name: '',
+      a_id: []
     }
   },
   methods: {
-    tabletotal (val) {
+    tabletotal(val) {
       this.total = val
     },
     /**分页变动 */
-    handleSizeChange (paginationInfo) {
+    handleSizeChange(paginationInfo) {
       let params = {}
       params.page = paginationInfo.page
       params.limit = paginationInfo.limit
@@ -80,14 +82,14 @@ export default {
       //   this.$refs.tableRef.getList(params)
     },
     /**编辑 */
-    handleEdit (data) {
-      console.log(data);
+    handleEdit(data) {
+      //   console.log(data);
       this.drawer = true
       this.role_name = data.role
       this.getPages(data.role)
     },
     /**点击删除 */
-    handleDelete (data) {
+    handleDelete(data) {
       this.$confirm('是否删除改用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -104,11 +106,11 @@ export default {
       }).catch(() => {
       });
     },
-    formatRouterTree (data) {
+    formatRouterTree(data) {
       let parents = data.filter(p => p.pid === 0),
         children = data.filter(c => c.pid !== 0);
       dataToTree(parents, children);
-      function dataToTree (parents, children) {
+      function dataToTree(parents, children) {
         parents.map((p) => {
           children.map((c, i) => {
             if (c.pid === p.id) {
@@ -127,20 +129,22 @@ export default {
       }
       return parents;
     },
-    getAllPages () {
+    getAllPages() {
       getAllPages().then(response => {
         this.data = this.formatRouterTree(response.data)
       })
     },
     /**授权页面 */
-    getPages (role) {
+    getPages(role) {
       let data = {}
       let where = {}
       where.role_name = role
+      where.nopage = 1
       data.where = JSON.stringify(where)
       getPages(data).then(response => {
         /**默认展开的节点 */
         this.roleData = this.formatRouterTree(response.data)
+        console.log(this.roleData);
         this.checkedId = this.roleData.map(item => {
           return item.id
         })
@@ -152,29 +156,73 @@ export default {
             }
           }
         })
-        console.log(response.data);
+        // console.log(response.data);
+        this.a_id = response.data.map(item => {
+          return item.a_id
+        })
+        // console.log(this.a_id);
         this.getAllPages()
       })
     },
-    /**保存按钮 */
-    savePermissions () {
-      let all = this.$refs.tree.getCheckedNodes(false, true).map((item) => {
-        // return item.id
-        return item.name
+    hasPermission(route, asyncRoutes) {
+      const hasRoute = asyncRoutes.some(i => {
+        if (i.name == route.page_name) {
+          return true
+        }
       })
-      // console.log(all);
-      all.filter(item => {
+      return hasRoute
+    },
+
+    /**保存按钮 */
+    async savePermissions() {
+      let all = this.$refs.tree.getCheckedNodes(false, true).map((item) => {
+        return item
+      })
+      let addArr=[]
+      for (let aItem of all) {
+        if (!this.roleData.some(rItem => rItem.page_name == aItem.name)) {
+        //   console.log(aItem);
+          addArr.push(aItem)
+        }
+      }
+
+    
+      await this.a_id.forEach(id => {
+        let a_id = id
+        // delUserAssociation(a_id).then(response => {
+        //   console.log(response);
+
+        // })
+      })
+      addArr.filter(item => {
         let postData = {}
         postData.role_name = this.role_name
-        postData.page_name = item
-        console.log(item);
-        addUserAssociation(postData).then(response => {
-          console.log(response.data);
-        })
+        postData.page_name = item.name
+        console.log(postData);
+        // addUserAssociation(postData).then(response => {
+        //     console.log(response.data);
+        // })
       })
+    },
+
+    /** */
+    nodeClick(data, self, children) {
+      // console.log('11');
+      //   console.log(data);
+      //   console.log(self);
+      //   // console.log(children);
+      //   let postData = {}
+      //   postData.role_name = this.role_name
+      //   postData.page_name = data.name
+      // addUserAssociation(postData).then(response => {
+      //     console.log(response.data);
+      // })
+      if (self == true) {
+
+      }
     }
   },
-  mounted () {
+  mounted() {
 
   },
   watch: {
