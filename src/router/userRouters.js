@@ -20,6 +20,13 @@ export const userRouters = [{
                     import ('@/views/roles/index'),
             },
             {
+                path: 'tree',
+                name: 'CaiDanShu',
+                meta: { title: '菜单树管理' },
+                component: () =>
+                    import ('@/views/tree/treeIndex'),
+            },
+            {
                 path: 'test',
                 name: 'test',
                 meta: { title: '测试' },

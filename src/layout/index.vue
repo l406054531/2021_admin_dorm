@@ -27,7 +27,7 @@ export default {
     };
   },
   methods: {
-   
+
     recursionRouter (userRouter, allRouter) {
       var realRoutes = []
       let arr = []
@@ -47,7 +47,7 @@ export default {
           })
         })
       })
-    //   console.log(realRoutes);
+      //   console.log(realRoutes);
       return realRoutes
     },
     test () {

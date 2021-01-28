@@ -25,7 +25,6 @@
                ref="tree"
                show-checkbox
                node-key="id"
-               @check-change="nodeClick"
                :default-expanded-keys="expandedId"
                :default-checked-keys="checkedId"
                :props="defaultProps">
@@ -37,12 +36,12 @@
 
 <script>
 import mytable from './module/mytable';
-// import { getAllPages } from '@/api/pages';
 import { getPages, addUserAssociation, delUserAssociation } from '@/api/association';
+import { delRole } from '@/api/roles';
 import { getAllPages } from '@/api/pages';
 export default {
   components: { mytable },
-  data() {
+  data () {
     return {
       //表格表头
       tableHeader: [
@@ -66,15 +65,14 @@ export default {
       checkedId: [],
       expandedId: [],
       role_name: '',
-      a_id: []
     }
   },
   methods: {
-    tabletotal(val) {
+    tabletotal (val) {
       this.total = val
     },
     /**分页变动 */
-    handleSizeChange(paginationInfo) {
+    handleSizeChange (paginationInfo) {
       let params = {}
       params.page = paginationInfo.page
       params.limit = paginationInfo.limit
@@ -82,35 +80,34 @@ export default {
       //   this.$refs.tableRef.getList(params)
     },
     /**编辑 */
-    handleEdit(data) {
-      //   console.log(data);
+    handleEdit (data) {
       this.drawer = true
       this.role_name = data.role
       this.getPages(data.role)
     },
     /**点击删除 */
-    handleDelete(data) {
+    handleDelete (data) {
       this.$confirm('是否删除改用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        // let admin_id = data.admin_id
-        // del(admin_id).then(response => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功!'
-        //   });
-        //   this.tableKey = Math.random() * 100 + new Date();
-        // })
+        let id = data.id
+        delRole(id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.tableKey = Math.random() * 100 + new Date();
+        })
       }).catch(() => {
       });
     },
-    formatRouterTree(data) {
+    formatRouterTree (data) {
       let parents = data.filter(p => p.pid === 0),
         children = data.filter(c => c.pid !== 0);
       dataToTree(parents, children);
-      function dataToTree(parents, children) {
+      function dataToTree (parents, children) {
         parents.map((p) => {
           children.map((c, i) => {
             if (c.pid === p.id) {
@@ -129,13 +126,13 @@ export default {
       }
       return parents;
     },
-    getAllPages() {
+    getAllPages () {
       getAllPages().then(response => {
         this.data = this.formatRouterTree(response.data)
       })
     },
     /**授权页面 */
-    getPages(role) {
+    getPages (role) {
       let data = {}
       let where = {}
       where.role_name = role
@@ -144,7 +141,6 @@ export default {
       getPages(data).then(response => {
         /**默认展开的节点 */
         this.roleData = this.formatRouterTree(response.data)
-        console.log(this.roleData);
         this.checkedId = this.roleData.map(item => {
           return item.id
         })
@@ -156,73 +152,64 @@ export default {
             }
           }
         })
-        // console.log(response.data);
-        this.a_id = response.data.map(item => {
-          return item.a_id
-        })
-        // console.log(this.a_id);
         this.getAllPages()
       })
     },
-    hasPermission(route, asyncRoutes) {
-      const hasRoute = asyncRoutes.some(i => {
-        if (i.name == route.page_name) {
-          return true
-        }
-      })
-      return hasRoute
-    },
 
     /**保存按钮 */
-    async savePermissions() {
+    savePermissions () {
       let all = this.$refs.tree.getCheckedNodes(false, true).map((item) => {
         return item
       })
-      let addArr=[]
-      for (let aItem of all) {
+      this.delUserAssociation(all)
+      // this.addUserAssociation(all)
+      // this.$message({
+      //   type: 'success',
+      //   message: '保存成功'
+      // })
+      // this.drawer = false
+    },
+    /** 删除授权页面 */
+    delUserAssociation (allPages) {
+      let arrId = []
+      let aid = []
+      for (let aItem of allPages) {
+        for (let rItem of this.roleData) {
+          if (aItem.id == rItem.id) {
+            arrId.push(aItem.id)
+          }
+        }
+      }
+      for (let rItem of this.roleData) {
+
+      }
+      console.log(this.roleData);
+      /**异步 */
+      // aid.forEach(a_id => {
+      //   console.log(a_id);
+      //   // delUserAssociation(a_id).then(response => { });
+      // })
+    },
+    /**新增授权页面 */
+    addUserAssociation (allPages) {
+      let addArr = []
+      /**过滤页面 */
+      for (let aItem of allPages) {
+
         if (!this.roleData.some(rItem => rItem.page_name == aItem.name)) {
-        //   console.log(aItem);
           addArr.push(aItem)
         }
       }
-
-    
-      await this.a_id.forEach(id => {
-        let a_id = id
-        // delUserAssociation(a_id).then(response => {
-        //   console.log(response);
-
-        // })
-      })
-      addArr.filter(item => {
+      /**异步 */
+      addArr.forEach(item => {
         let postData = {}
         postData.role_name = this.role_name
         postData.page_name = item.name
-        console.log(postData);
-        // addUserAssociation(postData).then(response => {
-        //     console.log(response.data);
-        // })
+        addUserAssociation(postData).then(response => { })
       })
-    },
-
-    /** */
-    nodeClick(data, self, children) {
-      // console.log('11');
-      //   console.log(data);
-      //   console.log(self);
-      //   // console.log(children);
-      //   let postData = {}
-      //   postData.role_name = this.role_name
-      //   postData.page_name = data.name
-      // addUserAssociation(postData).then(response => {
-      //     console.log(response.data);
-      // })
-      if (self == true) {
-
-      }
     }
   },
-  mounted() {
+  mounted () {
 
   },
   watch: {
@@ -246,14 +233,16 @@ export default {
 </style>
 <style lang="scss" scoped>
 .main {
-  ::v-deep {
-    .el-dialog {
-      height: 320px;
+  .el-drawer {
+    .el-button {
+      border-radius: 20px;
+      margin-left: 30px;
+      height: 30px;
+      line-height: 9px;
     }
-  }
-
-  .el-tree {
-    margin-left: 20px;
+    .el-tree {
+      margin: 20px;
+    }
   }
 }
 ::v-deep :focus {

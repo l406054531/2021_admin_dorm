@@ -31,17 +31,17 @@ export default {
       default: true
     }
   },
-  data() {
+  data () {
     return {
     }
   },
   methods: {
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.paginationInfo.limit = val
       this.$emit('handleSizeChange', this.paginationInfo)
 
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.paginationInfo.page = val
       this.$emit('handleSizeChange', this.paginationInfo)
     }
@@ -49,3 +49,8 @@ export default {
 
 }
 </script>
+<style lang="scss">
+.el-pagination {
+  margin-top: 20px;
+}
+</style>

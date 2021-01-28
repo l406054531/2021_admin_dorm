@@ -15,7 +15,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 .el-main {
-   background-color: #ededed;
-   padding-top: 30px;
+  background-color: #fff;
+  padding-top: 20px;
 }
 </style>

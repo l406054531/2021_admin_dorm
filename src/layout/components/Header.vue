@@ -61,7 +61,7 @@ import { Encrypt, Decrypt } from '@/utils/Crypto';
 import { getRadio } from '@/utils/cache';
 import { getUserInfo, setUserInfo } from '@/utils/cache';
 export default {
-  data() {
+  data () {
     const password = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('请输入原密码'));
@@ -137,17 +137,17 @@ export default {
   },
   methods: {
     /**退出登录 */
-    logout() {
+    logout () {
       sessionStorage.clear();
       //   this.$router.push('/login')
       this.$router.go(0)
     },
     /**返回首页 */
-    homepage() {
+    homepage () {
       let path = this.$store.getters.permission_routes[0].redirect
       this.$router.push(path)
     },
-    handleCommand(command) {
+    handleCommand (command) {
       if (command == "logout") {
         this.logout()
       } else if (command == "home") {
@@ -165,11 +165,11 @@ export default {
         this.dialogTitle = this.passwordTitle
       }
     },
-    dropdownChange(e) {
+    dropdownChange (e) {
       this.active = e
     },
     /**上传头像 */
-    upload() {
+    upload () {
       let file = this.$refs.uploadFile.files[0];
       let postData = new FormData();
       postData.append('file', file);
@@ -207,7 +207,7 @@ export default {
     //   this.infoDialogform = info
     // },
     /**确认修改密码 */
-    async editPassword() {
+    async editPassword () {
       let flag = await this.$refs.passwordRef.validateForm();
       if (flag == null) {
         let data = {}
@@ -228,14 +228,14 @@ export default {
 
     },
     /** 实时修改缓存 */
-    setUserInfo(data, key, Callback) {
+    setUserInfo (data, key, Callback) {
       let userInfo = this.userInfo
       userInfo[key] = data
       setUserInfo(JSON.stringify(userInfo))
       Callback(data)
     },
     /**清空表单 */
-    emptyForm() {
+    emptyForm () {
       this.passwordDialogform = {}
       this.passwordDialogHeader.forEach((item) => {
         this.$set(this.passwordDialogform, item.prop, "");
@@ -248,7 +248,7 @@ export default {
       this.dialogVisible = false
     },
   },
-  mounted() {
+  mounted () {
     this.userInfo = JSON.parse(this.$store.getters.userInfo)
     this.imageUrl = 'https://liangx-1302611204.cos.ap-nanjing.myqcloud.com/' + this.userInfo.img
   }
@@ -261,9 +261,11 @@ export default {
   left: 0;
   z-index: 2;
   width: 100%;
-  height: 70px;
+  height: 60px;
   line-height: 60px;
-  background-color: rgb(211, 218, 226);
+  background-color: #fff;
+  border-bottom: 1px solid #dcdfe6;
+  box-sizing: border-box;
   color: #000;
   text-align: center;
   font-size: 22px;
@@ -284,7 +286,7 @@ export default {
       img {
         width: 50px;
         height: 50px;
-        margin: auto 8px;
+        margin: 0 8px;
         line-height: 45px;
         border-radius: 50%;
       }

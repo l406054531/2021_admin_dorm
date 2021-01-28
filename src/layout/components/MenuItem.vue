@@ -4,9 +4,10 @@
              unique-opened
              :collapse-transition="false"
              :router="true"
-             background-color=" rgb(221, 227, 235)"
+             background-color="#fff"
              text-color="#000"
-             active-text-color="#FF4500">
+             active-text-color="#FF4500"
+             style="height:100%">
       <div v-for="(item, index) of addRouters "
            :key="index">
         <el-submenu :index="index.toString()"
@@ -39,11 +40,26 @@
 <script>
 export default {
   name: "MenuItem",
-  props:{
-      addRouters:Array
+  props: {
+    addRouters: Array
   }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+::v-deep {
+  .el-menu-item,
+  .el-submenu .el-menu-item {
+    height: 45px;
+    line-height: 45px;
+  }
+  .el-menu-item,
+  .el-submenu__title {
+    height: 45px;
+    line-height: 45px;
+  }
+  .el-menu-item-group__title {
+    padding: 0;
+  }
+}
 </style>

@@ -2,7 +2,8 @@
   <div>
     <el-table :data="tableData"
               border
-              highlight-current-row>
+              highlight-current-row
+              height="650">
       <template v-for="(item,index) in tableHeader">
         <el-table-column v-if="item.label=='操作'"
                          :label="item.label"
@@ -56,7 +57,7 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       tableData: [],
       paging: {
@@ -67,7 +68,7 @@ export default {
     };
   },
   methods: {
-    getList(params) {
+    getList (params) {
       getAdminList(params).then(response => {
         if (response.code == 1) {
           this.tableData = response.data
@@ -76,23 +77,23 @@ export default {
         }
       })
     },
-    getParentData(data) {
+    getParentData (data) {
       this.tableData = data
     },
     /**编辑 */
-    handleEdit(data) {
+    handleEdit (data) {
       this.$emit('handleEdit', data)
     },
     /**点击删除 */
-    handleDelete(data) {
+    handleDelete (data) {
       this.$emit('handleDelete', data)
     },
     /**重置密码 */
-    handleReset(data) {
+    handleReset (data) {
       this.$emit('handleReset', data)
     },
     /**判断角色名 */
-    ifRoleName(name) {
+    ifRoleName (name) {
       switch (name) {
         case 'admin':
           return '超级管理员';
@@ -108,7 +109,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     this.getList(this.params)
   },
 }

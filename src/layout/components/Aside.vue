@@ -1,6 +1,7 @@
 <template>
   <el-aside width="210px">
- <MenuItem  :addRouters="addRouters"/>
+    <MenuItem :addRouters="addRouters"
+              style="height:100%" />
   </el-aside>
 </template>
 
@@ -8,24 +9,23 @@
 import MenuItem from "./MenuItem";
 export default {
   components: { MenuItem },
-  data() {
+  data () {
     return {
-        addRouters:[]
+      addRouters: []
     };
   },
-  mounted() {
-      this.addRouters=this.$store.state.permission.addRoutes 
+  mounted () {
+    this.addRouters = this.$store.state.permission.addRoutes
   },
-  destroyed(){
-      this.addRouters=null
+  destroyed () {
+    this.addRouters = null
     //   console.log(this.addRouters);
   }
 };
 </script>
 <style lang='scss' scoped>
 .el-aside {
- background:  rgb(221, 227, 235);
+  background: #fff;
   height: 100%;
-  padding-top: 10px;
 }
 </style>

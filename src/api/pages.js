@@ -14,3 +14,13 @@ export function addPages(data) {
         data
     })
 }
+
+export function delPages(id) {
+    return request({
+        url: 'Pages/del',
+        method: "POST",
+        data: {
+            id
+        }
+    })
+}
