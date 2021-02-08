@@ -195,8 +195,7 @@ export default {
       let addArr = []
       /**过滤页面 */
       for (let aItem of allPages) {
-
-        if (!this.roleData.some(rItem => rItem.page_name == aItem.name)) {
+        if (!this.roleData.some(rItem => rItem.name == aItem.name)) {
           addArr.push(aItem)
         }
       }
